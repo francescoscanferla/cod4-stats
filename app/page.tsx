@@ -139,7 +139,7 @@ const Home = () => {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof PlayerStats;
     direction: 'asc' | 'desc';
-  }>({ key: 'ratio', direction: 'desc' });
+  }>({ key: 'kills', direction: 'desc' });
 
   const sortedStats = useMemo(() => {
     if (!stats?.general) return [];
@@ -175,6 +175,7 @@ const Home = () => {
     if (sortConfig.key !== key) return ' ↕';
     return sortConfig.direction === 'asc' ? ' 🔼' : ' 🔽';
   };
+
   return (
     <div className="min-h-screen bg-[#11111b] text-[#cdd6f4] p-4 font-sans">
 
@@ -222,7 +223,6 @@ const Home = () => {
         <div className="mb-6 w-full">
           <h2 className="text-xl font-bold text-[#cdd6f4] mb-4">CLASSIFICA GENERALE</h2>
 
-          {/* Contenitore con overflow-x-auto per non rompere il layout su schermi piccoli */}
           <div className="bg-[#181825] border border-[#313244] overflow-x-auto whitespace-nowrap">
             <table className="w-full text-left border-collapse">
               <thead>
