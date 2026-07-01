@@ -286,7 +286,7 @@ const Home = () => {
               <h3 className="text-sm font-semibold text-white mb-1">{getAwardName(key as keyof Awards)}</h3>
               <p className="text-xs text-[#5f6378] mb-2">{getAwardDescription(key as keyof Awards)}</p>
               <p className={`text-lg font-bold ${getColorForStat(key as keyof Awards, award.value)}`}>
-                {award.player_name} ({typeof award.value === 'number' ? award.value.toFixed(2) : award.value})
+                {award.player_name} ({typeof award.value === 'number' ? award.value : award.value})
               </p>
             </div>
           ))}
