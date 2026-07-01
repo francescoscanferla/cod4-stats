@@ -1,0 +1,6 @@
+# API RATE LIMIT CONSTRAINTS (Gemini 2.5 Free Tier)
+The API key being used has a strict limit of 20 requests per minute (RPM). To avoid "429 Resource Exhausted" errors, you must adapt your operating speed:
+
+1. **Batch your thoughts:** Do not make multiple microscopic tool calls (e.g., reading 3 files one by one). When possible, read multiple files or plan ahead in a single turn.
+2. **Artificial Pacing:** When executing terminal commands (like compilation or testing), take your time. Do not chain multiple actions instantly.
+3. **Verification pauses:** After completing a file modification, analyze your own work internally before outputting the next message to give the rate-limit window time to cool down.
