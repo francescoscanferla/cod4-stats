@@ -13,14 +13,92 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '1rem' }}>
-      <h1>Accedi a CoD4 Stats</h1>
-      <button onClick={() => handleLogin('google')} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
-        Accedi con Google
-      </button>
-      <button onClick={() => handleLogin('discord')} style={{ padding: '0.5rem 1rem', cursor: 'pointer' }}>
-        Accedi con Discord
-      </button>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      backgroundColor: '#11111b',
+      fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      color: '#cdd6f4',
+      padding: '1rem'
+    }}>
+      <div style={{
+        backgroundColor: '#1e1e2e',
+        padding: '3rem 2.5rem',
+        borderRadius: '16px',
+        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.5)',
+        width: '100%',
+        maxWidth: '420px',
+        textAlign: 'center',
+        border: '1px solid #313244'
+      }}>
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: '800',
+          letterSpacing: '-0.05em',
+          marginBottom: '0.75rem',
+          color: '#a6e3a1'
+        }}>
+          B.Y.O.B. Stats
+        </h1>
+        <p style={{
+          fontSize: '0.9rem',
+          color: '#a6adc8',
+          marginBottom: '2.5rem',
+          lineHeight: '1.4'
+        }}>
+          Accedi per visualizzare le statistiche
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <button 
+            onClick={() => handleLogin('google')} 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              width: '100%',
+              padding: '0.8rem',
+              backgroundColor: '#ffffff',
+              color: '#1f1f1f',
+              border: '1px solid #e0e0e0',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontSize: '0.95rem',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            }}
+          >
+            <span style={{ width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>G</span>
+            Accedi con Google
+          </button>
+
+          <button 
+            onClick={() => handleLogin('discord')} 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              width: '100%',
+              padding: '0.8rem',
+              backgroundColor: '#5865F2',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              fontSize: '0.95rem',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            <span style={{ width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>D</span>
+            Accedi con Discord
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

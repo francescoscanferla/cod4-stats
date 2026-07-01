@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from './api/stats/stats-repository';
 
 interface PlayerStats {
   player_name: string;
@@ -31,13 +33,27 @@ interface StatsPayload {
 }
 
 const Home = () => {
+  const router = useRouter();
   const [period, setPeriod] = useState<'global' | 'last'>('global');
   const [stats, setStats] = useState<StatsPayload | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const checkUserAndFetch = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.replace('/login');
+        return;
+      }
+
+      if (session.user?.user_metadata?.is_admin === true) {
+        setIsAdmin(true);
+      }
+
+      // Qui parte la tua logica originale di fetchStats
       setLoading(true);
       setError(null);
       try {
@@ -53,7 +69,8 @@ const Home = () => {
         setLoading(false);
       }
     };
-    fetchStats();
+
+    checkUserAndFetch();
   }, [period]);
 
   const getBorderColorForStat = (statName: keyof Awards) => {
