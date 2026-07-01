@@ -233,6 +233,36 @@ const Home = () => {
         </button>
       </div>
 
+      {isAdmin && (
+        <div className="bg-[#181825] border border-[#313244] p-4 mb-6 rounded-lg flex flex-col gap-2">
+          <h3 className="text-sm font-semibold text-[#a6e3a1]">Carica Log Sessione (Admin)</h3>
+          <input
+            type="file"
+            accept=".log,.txt"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const formData = new FormData();
+              formData.append('file', file);
+
+              try {
+                const res = await fetch('/api/stats/upload', {
+                  method: 'POST',
+                  body: formData
+                });
+                if (!res.ok) throw new Error('Errore durante il caricamento');
+                alert('Log caricato e salvato con successo!');
+                window.location.reload();
+              } catch (err: any) {
+                alert(err.message);
+              }
+            }}
+            className="text-xs text-[#cdd6f4]"
+          />
+        </div>
+      )}
+
       {loading && <p className="text-center text-[#a6e3a1]">Caricamento statistiche...</p>}
       {error && <p className="text-center text-red-500">Errore: {error}</p>}
 
