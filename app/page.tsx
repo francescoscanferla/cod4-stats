@@ -204,29 +204,51 @@ const Home = () => {
 
       <header className="bg-[#1e1e2e] p-4 mb-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-[#1fc75c]">{`B.Y.O.B. Stats`}</h1>
-        <div className="w-10 h-10 bg-[#313244] rounded-full border-2 border-[#1fc75c] overflow-hidden flex items-center justify-center">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt="Profile"
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className="w-full h-full bg-[#313244]" />
-          )}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={async () => {
+              await supabase.auth.signOut();
+              router.replace('/login');
+            }}
+            className="p-2 hover:bg-[#313244] rounded-lg transition-colors cursor-pointer"
+            title="Disconnetti"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="#cdd6f4"
+              className="w-6 h-6"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+            </svg>
+          </button>
+
+          <div className="w-10 h-10 bg-[#313244] rounded-full border-2 border-[#1fc75c] overflow-hidden flex items-center justify-center">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="w-full h-full bg-[#313244]" />
+            )}
+          </div>
         </div>
       </header>
 
       <div className="bg-[#181825] rounded-full p-1 mb-6 flex justify-around">
         <button
-          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors ${period === 'global' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
+          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'global' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
           onClick={() => setPeriod('global')}
         >
           Globali
         </button>
         <button
-          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors ${period === 'last' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
+          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'last' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
           onClick={() => setPeriod('last')}
         >
           Ultima Sessione
