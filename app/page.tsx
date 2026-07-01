@@ -39,6 +39,7 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserAndFetch = async () => {
@@ -53,7 +54,12 @@ const Home = () => {
         setIsAdmin(true);
       }
 
-      // Qui parte la tua logica originale di fetchStats
+      // Recupera l'URL dell'immagine del profilo da Google o Discord
+      const userAvatar = session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture;
+      if (userAvatar) {
+        setAvatarUrl(userAvatar);
+      }
+
       setLoading(true);
       setError(null);
       try {
@@ -198,7 +204,18 @@ const Home = () => {
 
       <header className="bg-[#1e1e2e] p-4 mb-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-[#1fc75c]">{`B.Y.O.B. Stats`}</h1>
-        <div className="w-10 h-10 bg-[#313244] rounded-full border-2 border-[#1fc75c]"></div>
+        <div className="w-10 h-10 bg-[#313244] rounded-full border-2 border-[#1fc75c] overflow-hidden flex items-center justify-center">
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt="Profile"
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="w-full h-full bg-[#313244]" />
+          )}
+        </div>
       </header>
 
       <div className="bg-[#181825] rounded-full p-1 mb-6 flex justify-around">
