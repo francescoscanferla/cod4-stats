@@ -71,7 +71,7 @@ export default function LoginPage() {
               boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}
           >
-            <span style={{ width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>G</span>
+            <img src="/login/google-logo.png" alt="Google Logo" style={{ width: '24px', height: '24px' }} />
             Accedi con Google
           </button>
 
@@ -94,7 +94,7 @@ export default function LoginPage() {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            <span style={{ width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>D</span>
+            <img src="/login/discord-logo.png" alt="Discord Logo" style={{ width: '32px', height: '32px' }} />
             Accedi con Discord
           </button>
         </div>
