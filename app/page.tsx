@@ -89,9 +89,9 @@ const Home = () => {
         return 'border-t-green-400';
       case 'deaths':
       case 'suicides':
-        return 'border-t-[#ff5d00]';
+        return 'border-t-ctp-red';
       default:
-        return 'border-t-[#313244]';
+        return 'border-t-ctp-line';
     }
   };
 
@@ -106,7 +106,7 @@ const Home = () => {
         return 'text-green-400';
       case 'deaths':
       case 'suicides':
-        return 'text-[#ff5d00]';
+        return 'text-ctp-red';
       default:
         return 'text-white';
     }
@@ -199,14 +199,14 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#11111b] text-[#cdd6f4] p-4 font-sans">
-      <header className="bg-[#1e1e2e] p-4 mb-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-[#1fc75c]">{`B.Y.O.B. Stats`}</h1>
+    <div className="min-h-screen bg-ctp-bg text-ctp-text p-4 font-sans">
+      <header className="bg-ctp-overlay p-4 mb-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold text-ctp-brand">{`B.Y.O.B. Stats`}</h1>
         <div className="flex items-center gap-3">
           {isAdmin && (
             <button
               onClick={() => router.push('/admin')}
-              className="p-2 hover:bg-[#313244] rounded-lg transition-colors cursor-pointer"
+              className="p-2 hover:bg-ctp-line rounded-lg transition-colors cursor-pointer"
               title="Pannello Amministratore"
             >
               <svg
@@ -228,7 +228,7 @@ const Home = () => {
               await supabase.auth.signOut();
               router.replace('/login');
             }}
-            className="p-2 hover:bg-[#313244] rounded-lg transition-colors cursor-pointer"
+            className="p-2 hover:bg-ctp-line rounded-lg transition-colors cursor-pointer"
             title="Disconnetti"
           >
             <svg
@@ -243,7 +243,7 @@ const Home = () => {
             </svg>
           </button>
 
-          <div className="w-10 h-10 bg-[#313244] rounded-full border-2 border-[#1fc75c] overflow-hidden flex items-center justify-center">
+          <div className="w-10 h-10 bg-ctp-line rounded-full border-2 border-ctp-brand overflow-hidden flex items-center justify-center">
             {avatarUrl ? (
               <img
                 src={avatarUrl}
@@ -252,21 +252,21 @@ const Home = () => {
                 referrerPolicy="no-referrer"
               />
             ) : (
-              <div className="w-full h-full bg-[#313244]" />
+              <div className="w-full h-full bg-ctp-line" />
             )}
           </div>
         </div>
       </header>
 
-      <div className="bg-[#181825] rounded-full p-1 mb-6 flex justify-around">
+      <div className="bg-ctp-surface rounded-full p-1 mb-6 flex justify-around">
         <button
-          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'global' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
+          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'global' ? 'bg-ctp-brand text-ctp-bg' : 'text-ctp-text'}`}
           onClick={() => setPeriod('global')}
         >
           Globali
         </button>
         <button
-          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'last' ? 'bg-[#1fc75c] text-[#11111b]' : 'text-[#cdd6f4]'}`}
+          className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'last' ? 'bg-ctp-brand text-ctp-bg' : 'text-ctp-text'}`}
           onClick={() => setPeriod('last')}
         >
           Ultima Sessione
@@ -281,10 +281,10 @@ const Home = () => {
           {Object.entries(stats.awards).map(([key, award]) => (
             <div
               key={key}
-              className={`bg-[#1e1e2e] p-4 border border-[#313244] border-t-2 ${getBorderColorForStat(key as keyof Awards)} flex flex-col items-center text-center`}>
+              className={`bg-ctp-overlay p-4 border border-ctp-line border-t-2 ${getBorderColorForStat(key as keyof Awards)} flex flex-col items-center text-center`}>
               <img src={`/dashboard/${key}.png`} alt={key} className="w-8 h-8 mb-2" />
               <h3 className="text-sm font-semibold text-white mb-1">{getAwardName(key as keyof Awards)}</h3>
-              <p className="text-xs text-[#5f6378] mb-2">{getAwardDescription(key as keyof Awards)}</p>
+              <p className="text-xs text-ctp-muted mb-2">{getAwardDescription(key as keyof Awards)}</p>
               <p className={`text-lg font-bold ${getColorForStat(key as keyof Awards, award.value)}`}>
                 {award.player_name} ({typeof award.value === 'number' ? award.value : award.value})
               </p>
@@ -295,37 +295,37 @@ const Home = () => {
 
       {stats && (
         <div className="mb-6 w-full">
-          <h2 className="text-xl font-bold text-[#cdd6f4] mb-4">CLASSIFICA GENERALE</h2>
+          <h2 className="text-xl font-bold text-ctp-text mb-4">CLASSIFICA GENERALE</h2>
 
-          <div className="bg-[#181825] border border-[#313244] overflow-x-auto whitespace-nowrap">
+          <div className="bg-ctp-surface border border-ctp-line overflow-x-auto whitespace-nowrap">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="text-xs font-semibold text-[#a6e3a1] bg-[#1e1e2e]">
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('player_name')}>
+                <tr className="text-xs font-semibold text-[#a6e3a1] bg-ctp-overlay">
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('player_name')}>
                     PLAYER {getSortIcon('player_name')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('kills')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('kills')}>
                     KILLS {getSortIcon('kills')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('headshots')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('headshots')}>
                     HEADSHOTS {getSortIcon('headshots')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('ratio')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('ratio')}>
                     RATIO {getSortIcon('ratio')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('claymorekills')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('claymorekills')}>
                     CLAYMORE {getSortIcon('claymorekills')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('grenadekills')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('grenadekills')}>
                     GRENADE {getSortIcon('grenadekills')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('knifekills')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line transition-colors" onClick={() => requestSort('knifekills')}>
                     BASHED {getSortIcon('knifekills')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] text-[#ff5d00] transition-colors" onClick={() => requestSort('suicides')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line text-ctp-red transition-colors" onClick={() => requestSort('suicides')}>
                     SUICIDES {getSortIcon('suicides')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] text-[#ff5d00] transition-colors" onClick={() => requestSort('deaths')}>
+                  <th className="p-3 cursor-pointer hover:bg-ctp-line text-ctp-red transition-colors" onClick={() => requestSort('deaths')}>
                     DEATHS {getSortIcon('deaths')}
                   </th>
                 </tr>
@@ -334,12 +334,12 @@ const Home = () => {
                 {sortedStats.map((player) => {
                   let ratioColor = 'text-orange-300';
                   if (player.ratio > 1.5) ratioColor = 'text-green-400';
-                  if (player.ratio < 0.5) ratioColor = 'text-[#ff5d00]';
+                  if (player.ratio < 0.5) ratioColor = 'text-ctp-red';
 
                   return (
                     <tr
                       key={player.player_name}
-                      className="text-sm text-[#cdd6f4] border-t border-[#313244] hover:bg-[#1e1e2e] transition-colors"
+                      className="text-sm text-ctp-text border-t border-ctp-line hover:bg-ctp-overlay transition-colors"
                     >
                       <td className="p-3 font-medium">{player.player_name}</td>
                       <td className="p-3">{player.kills}</td>
@@ -350,8 +350,8 @@ const Home = () => {
                       <td className="p-3">{player.claymorekills}</td>
                       <td className="p-3">{player.grenadekills}</td>
                       <td className="p-3">{player.knifekills}</td>
-                      <td className="p-3 text-[#ff5d00]">{player.suicides}</td>
-                      <td className="p-3 text-[#ff5d00]">{player.deaths}</td>
+                      <td className="p-3 text-ctp-red">{player.suicides}</td>
+                      <td className="p-3 text-ctp-red">{player.deaths}</td>
                     </tr>
                   );
                 })}

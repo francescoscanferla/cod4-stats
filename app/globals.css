@@ -5,6 +5,18 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-ctp-bg: #11111b;
+  --color-ctp-surface: #181825;
+  --color-ctp-overlay: #1e1e2e;
+  --color-ctp-text: #cdd6f4;
+  --color-ctp-subtext: #a6adc8;
+  --color-ctp-muted: #5f6378;
+  --color-ctp-brand: #1fc75c;
+  --color-ctp-red: #ff5d00;
+  --color-ctp-line: #313244;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
