@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from './api/stats/stats-repository';
 
 interface PlayerStats {
+  player_guid: string;
   player_name: string;
   kills: number;
   headshots: number;
@@ -341,7 +342,22 @@ const Home = () => {
                       key={player.player_name}
                       className="text-sm text-ctp-text border-t border-ctp-line hover:bg-ctp-overlay transition-colors"
                     >
-                      <td className="p-3 font-medium">{player.player_name}</td>
+                      <td
+                        className="p-3 font-medium cursor-pointer hover:text-[#a6e3a1] transition-colors flex items-center gap-2 group"
+                        onClick={() => router.push(`/player?id=${encodeURIComponent(player.player_guid)}`)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-4 h-4 text-ctp-muted group-hover:text-[#a6e3a1] transition-colors"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                        </svg>
+                        <span>{player.player_name}</span>
+                      </td>
                       <td className="p-3">{player.kills}</td>
                       <td className="p-3">{player.headshots}</td>
                       <td className={`p-3 font-semibold ${ratioColor}`}>

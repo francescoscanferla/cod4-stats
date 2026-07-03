@@ -6,6 +6,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export interface PlayerStat {
+  player_guid: string;
   player_name: string;
   kills: number;
   headshots: number;
@@ -79,9 +80,9 @@ export async function getGlobalStats(): Promise<StatsResponse> {
   const { data: players, error } = await supabase.from("players").select("player_name, guid");
   if (error || !players || players.length === 0) return emptyResponse();
 
-  const playerStatsPromises = players.map(async (player) => {
-    const [k, d, h, c, g, kn, s] = await Promise.all([
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_guid", player.guid),
+    const playerStatsPromises = players.map(async (player) => {
+      const [k, d, h, c, g, kn, s] = await Promise.all([
+        supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_guid", player.guid),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("victim_guid", player.guid),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_guid", player.guid).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_guid", player.guid).eq("weapon", "claymore_mp"),
@@ -90,20 +91,21 @@ export async function getGlobalStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_guid", player.guid).eq("mod", "MOD_SUICIDE"),
     ]);
 
-    const kills = k.count || 0;
-    const deaths = d.count || 0;
-    const ratio = deaths === 0 ? kills : parseFloat((kills / deaths).toFixed(2));
-
-    return {
-      player_name: player.player_name,
-      kills,
-      deaths,
-      headshots: h.count || 0,
-      claymorekills: c.count || 0,
-      grenadekills: g.count || 0,
-      knifekills: kn.count || 0,
-      suicides: s.count || 0,
-      ratio,
+      const kills = k.count || 0;
+      const deaths = d.count || 0;
+      const ratio = deaths === 0 ? kills : parseFloat((kills / deaths).toFixed(2));
+  
+      return {
+        player_guid: player.guid,
+        player_name: player.player_name,
+        kills,
+        deaths,
+        headshots: h.count || 0,
+        claymorekills: c.count || 0,
+        grenadekills: g.count || 0,
+        knifekills: kn.count || 0,
+        suicides: s.count || 0,
+        ratio,
     };
   });
 
@@ -122,11 +124,12 @@ export async function getLastSessionStats(): Promise<StatsResponse> {
   if (playerGuids.length === 0) return emptyResponse();
 
   const { data: playersData } = await supabase.from("players").select("player_name, guid").in("guid", playerGuids);
-  const playerMap = new Map(playersData?.map((p) => [p.guid, p.player_name]));
-
-  const playerStatsPromises = playerGuids.map(async (guid) => {
-    const [k, d, h, c, g, kn, s] = await Promise.all([
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("attacker_guid", guid),
+    const playerMap = new Map(playersData?.map((p) => [p.guid, p.player_name]));
+    const playerGuidToPlayerMap = new Map(playersData?.map((p) => [p.guid, p]));
+  
+    const playerStatsPromises = playerGuids.map(async (guid) => {
+      const [k, d, h, c, g, kn, s] = await Promise.all([
+        supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("attacker_guid", guid),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("victim_guid", guid),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("attacker_guid", guid).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("attacker_guid", guid).eq("weapon", "claymore_mp"),
@@ -135,20 +138,21 @@ export async function getLastSessionStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("attacker_guid", guid).eq("mod", "MOD_SUICIDE"),
     ]);
 
-    const kills = k.count || 0;
-    const deaths = d.count || 0;
-    const ratio = deaths === 0 ? kills : parseFloat((kills / deaths).toFixed(2));
-
-    return {
-      player_name: playerMap.get(guid) || "Unknown",
-      kills,
-      deaths,
-      headshots: h.count || 0,
-      claymorekills: c.count || 0,
-      grenadekills: g.count || 0,
-      knifekills: kn.count || 0,
-      suicides: s.count || 0,
-      ratio,
+      const kills = k.count || 0;
+      const deaths = d.count || 0;
+      const ratio = deaths === 0 ? kills : parseFloat((kills / deaths).toFixed(2));
+  
+      return {
+        player_guid: playerGuidToPlayerMap.get(guid)?.guid || "Unknown",
+        player_name: playerMap.get(guid) || "Unknown",
+        kills,
+        deaths,
+        headshots: h.count || 0,
+        claymorekills: c.count || 0,
+        grenadekills: g.count || 0,
+        knifekills: kn.count || 0,
+        suicides: s.count || 0,
+        ratio,
     };
   });
 
