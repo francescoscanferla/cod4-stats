@@ -322,31 +322,39 @@ const Home = () => {
                   <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('knifekills')}>
                     BASHED {getSortIcon('knifekills')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('suicides')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#313244] text-[#ff5d00] transition-colors" onClick={() => requestSort('suicides')}>
                     SUICIDES {getSortIcon('suicides')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#313244] transition-colors" onClick={() => requestSort('deaths')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#313244] text-[#ff5d00] transition-colors" onClick={() => requestSort('deaths')}>
                     DEATHS {getSortIcon('deaths')}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {sortedStats.map((player) => (
-                  <tr
-                    key={player.player_name}
-                    className="text-sm text-[#cdd6f4] border-t border-[#313244] hover:bg-[#1e1e2e] transition-colors"
-                  >
-                    <td className="p-3 font-medium">{player.player_name}</td>
-                    <td className="p-3">{player.kills}</td>
-                    <td className="p-3">{player.headshots}</td>
-                    <td className="p-3 text-[#f9e2af] font-semibold">{player.ratio.toFixed(2)}</td>
-                    <td className="p-3">{player.claymorekills}</td>
-                    <td className="p-3">{player.grenadekills}</td>
-                    <td className="p-3">{player.knifekills}</td>
-                    <td className="p-3">{player.suicides}</td>
-                    <td className="p-3">{player.deaths}</td>
-                  </tr>
-                ))}
+                {sortedStats.map((player) => {
+                  let ratioColor = 'text-orange-300';
+                  if (player.ratio > 1.5) ratioColor = 'text-green-400';
+                  if (player.ratio < 0.5) ratioColor = 'text-[#ff5d00]';
+
+                  return (
+                    <tr
+                      key={player.player_name}
+                      className="text-sm text-[#cdd6f4] border-t border-[#313244] hover:bg-[#1e1e2e] transition-colors"
+                    >
+                      <td className="p-3 font-medium">{player.player_name}</td>
+                      <td className="p-3">{player.kills}</td>
+                      <td className="p-3">{player.headshots}</td>
+                      <td className={`p-3 font-semibold ${ratioColor}`}>
+                        {player.ratio.toFixed(2)}
+                      </td>
+                      <td className="p-3">{player.claymorekills}</td>
+                      <td className="p-3">{player.grenadekills}</td>
+                      <td className="p-3">{player.knifekills}</td>
+                      <td className="p-3 text-[#ff5d00]">{player.suicides}</td>
+                      <td className="p-3 text-[#ff5d00]">{player.deaths}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
