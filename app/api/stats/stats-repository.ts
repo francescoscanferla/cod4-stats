@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { PlayerStat, StatsResponse, HitZones, PlayerDetailsResponse } from "@/app/types/stats";
+import { StatsResponse, PlayerDetailsResponse } from "@/app/types/stats";
 import { emptyResponse, calculateAwards, aggregateMatchEvents } from "@/app/utils/stats-helpers";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";

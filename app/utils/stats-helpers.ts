@@ -1,6 +1,4 @@
-// app/utils/stats-helpers.ts
-
-import { PlayerStat, StatsResponse, HitZones, WeaponStat } from "@/app/types/stats";
+import { PlayerStat, StatsResponse, HitZones } from "@/app/types/stats";
 
 export function emptyResponse(): StatsResponse {
   return {
