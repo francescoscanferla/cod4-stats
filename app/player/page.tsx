@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/app/api/stats/stats-repository'; // adegua il percorso se necessario
+import { supabase } from '@/app/api/stats/stats-repository';
 import { Header } from '@/app/components/Header';
 import { Footer } from '@/app/components/Footer';
+import { BodyHeatmap } from '@/app/components/BodyHeatmap';
 
 interface PlayerData {
   player_name: string;
@@ -125,15 +126,10 @@ function PlayerStatsContent() {
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-ctp-subtext mb-3">Zone del Corpo Colpite (%)</h4>
-                    <div className="max-h-60 overflow-y-auto pr-2 flex flex-col gap-2 font-mono text-xs">
-                      {Object.entries(playerData.offensive.hit_zones).map(([zone, pct]) => (
-                        <div key={zone} className="flex justify-between items-center bg-ctp-bg/50 p-1.5 px-3 rounded">
-                          <span className="text-ctp-subtext">{zone}</span>
-                          <span className="font-bold text-green-400">{pct}%</span>
-                        </div>
-                      ))}
-                    </div>
+                    <BodyHeatmap
+                      hitZones={playerData.offensive.hit_zones}
+                      title="Dove Sei Letale"
+                    />
                   </div>
                 </div>
 
@@ -159,15 +155,10 @@ function PlayerStatsContent() {
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-ctp-subtext mb-3">Zone del Corpo Subite (%)</h4>
-                    <div className="max-h-60 overflow-y-auto pr-2 flex flex-col gap-2 font-mono text-xs">
-                      {Object.entries(playerData.defensive.hit_zones).map(([zone, pct]) => (
-                        <div key={zone} className="flex justify-between items-center bg-ctp-bg/50 p-1.5 px-3 rounded">
-                          <span className="text-ctp-subtext">{zone}</span>
-                          <span className="font-bold text-ctp-red">{pct}%</span>
-                        </div>
-                      ))}
-                    </div>
+                    <BodyHeatmap
+                      hitZones={playerData.defensive.hit_zones}
+                      title="Dove Ti Bucherellano"
+                    />
                   </div>
                 </div>
 

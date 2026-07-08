@@ -1,0 +1,178 @@
+'use client';
+
+import React from 'react';
+import { calculateRelativeHeatmap } from '@/app/utils/stats-helpers';
+
+interface BodyHeatmapProps {
+  hitZones: Record<string, number>;
+  title: string;
+}
+
+const ZONE_LABELS: Record<string, string> = {
+  head: 'Testa',
+  neck: 'Collo',
+  torso_upper: 'Torso Sup.',
+  torso_lower: 'Torso Inf.',
+  right_arm_upper: 'Braccio Dx',
+  right_arm_lower: 'Avambraccio Dx',
+  right_hand: 'Mano Dx',
+  left_arm_upper: 'Braccio Sx',
+  left_arm_lower: 'Avambraccio Sx',
+  left_hand: 'Mano Sx',
+  right_leg_upper: 'Coscia Dx',
+  right_leg_lower: 'Polpaccio Dx',
+  right_foot: 'Piede Dx',
+  left_leg_upper: 'Coscia Sx',
+  left_leg_lower: 'Polpaccio Sx',
+  left_foot: 'Piede Sx',
+};
+
+export function BodyHeatmap({ hitZones, title }: BodyHeatmapProps) {
+  const colors = calculateRelativeHeatmap(hitZones);
+  const getFill = (zone: string) => colors[zone] || 'hsl(120, 85%, 45%)';
+
+  // Helper per renderizzare i tag compatti di testo + percentuale
+  const renderZoneRow = (zone: string, alignRight = false) => {
+    const pct = hitZones[zone] ?? 0;
+    return (
+      <div 
+        className={`flex items-center gap-2 text-[11px] font-mono p-1 bg-ctp-surface/20 border border-ctp-line/10 rounded-sm ${
+          alignRight ? 'justify-end text-right' : 'justify-start text-left'
+        }`}
+      >
+        {alignRight ? (
+          <>
+            <span className="font-bold" style={{ color: getFill(zone) }}>{pct}%</span>
+            <span className="text-ctp-subtext text-[10px] uppercase">{ZONE_LABELS[zone]}</span>
+          </>
+        ) : (
+          <>
+            <span className="text-ctp-subtext text-[10px] uppercase">{ZONE_LABELS[zone]}</span>
+            <span className="font-bold" style={{ color: getFill(zone) }}>{pct}%</span>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="w-full">
+      {/* Titolo esterno */}
+      <h5 className="text-xs uppercase tracking-wider font-bold mb-3 text-ctp-subtext">
+        {title}
+      </h5>
+      
+      {/* Box principale senza arrotondamenti */}
+      <div className="w-full bg-ctp-bg border border-ctp-line p-4 rounded-none">
+        
+        {/* Layout a 3 colonne */}
+        <div className="grid grid-cols-3 gap-4 items-center min-h-[390px]">
+          
+          {/* COLONNA SINISTRA (Arti Sx + Torso Sup) */}
+          <div className="flex flex-col gap-y-3.5 h-full justify-center">
+            {renderZoneRow('left_arm_upper', true)}
+            {renderZoneRow('left_arm_lower', true)}
+            {renderZoneRow('left_hand', true)}
+            
+            {/* Torso Superiore posizionato sotto la mano sinistra */}
+            {renderZoneRow('torso_upper', true)}
+            
+            <div className="h-2" />
+            {renderZoneRow('left_leg_upper', true)}
+            {renderZoneRow('left_leg_lower', true)}
+          </div>
+
+          {/* COLONNA CENTRALE (Testa/Collo, SVG, Piedi) */}
+          <div className="flex flex-col items-center justify-between h-full gap-4">
+            
+            {/* In alto: Testa e Collo affiancati (Testa a Sx, Collo a Dx) */}
+            <div className="w-full grid grid-cols-2 gap-1.5">
+              {renderZoneRow('head')}
+              {renderZoneRow('neck')}
+            </div>
+
+            {/* Il disegno completo dell'uomo con le zone corrette */}
+            <div className="w-full flex justify-center my-auto">
+              <svg
+                version="1.1"
+                id="Capa_1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="55 0 100 206.326"
+                className="w-full h-auto max-h-[250px] object-contain"
+              >
+                <g stroke="none">
+                  {/* COLLO */}
+                  <path d="M 94.59 30.379 C 96.317 27.893 95.425 23.209 95.36 22.883 L 111.009 22.835 C 110.996 22.846 110.983 22.857 110.97 22.868 C 110.97 22.868 109.947 27.806 111.737 30.382 C 111.737 30.382 111.739 30.386 111.742 30.392 L 94.565 30.428 C 94.583 30.396 94.59 30.379 94.59 30.379 Z" fill={getFill('neck')} />
+                  
+                  {/* TORSO SUPERIORE (Il petto, sotto al collo) */}
+                  <path d="M 85.314 66.134 L 84.986 34.364 C 84.994 34.363 85.001 34.362 85.009 34.36 C 85.098 34.347 85.187 34.333 85.275 34.319 C 92.793 33.143 94.362 30.797 94.566 30.428 L 111.743 30.392 C 111.832 30.576 113.21 33.14 121.287 34.358 L 121.13 65.932 C 121.105 65.892 121.08 65.851 121.054 65.811 C 121.054 65.811 120.448 72.391 120.205 78.809 L 86.128 78.809 C 85.917 73.233 85.437 67.535 85.314 66.134 Z" fill={getFill('torso_upper')} />
+                  
+                  {/* TORSO INFERIORE (La zona del bacino, sopra le cosce) */}
+                  <path d="M 102.079 117.956 C 102.084 118.014 102.088 118.076 102.092 118.143 L 81.68 111.814 C 80.522 102.287 85.83 89.536 85.83 89.536 C 86.292 87.435 86.292 83.159 86.128 78.809 L 120.205 78.809 C 120.04 83.16 120.042 87.437 120.512 89.538 C 120.512 89.538 125.822 102.316 124.653 111.846 C 124.652 111.852 124.652 111.857 124.651 111.863 L 104.252 118.162 C 104.256 118.089 104.26 118.021 104.266 117.958 C 104.266 117.958 103.82 118.303 103.112 118.309 L 103.112 118.31 L 103.114 118.31 C 103.104 118.31 103.097 118.31 103.089 118.31 L 103.088 118.31 L 103.081 118.308 L 103.076 117.885 L 103.075 117.871 L 103.08 118.307 L 102.079 117.956 Z" fill={getFill('torso_lower')} />
+
+                  {/* COSCIA DESTRA */}
+                  <path d="M 120.422 140.063 C 119.545 143.163 120.069 150.97 119.35 152.911 C 119.185 153.357 119.156 153.782 119.265 154.371 L 108.936 154.371 C 108.524 152.077 107.95 149.71 107.646 147.917 C 106.414 140.618 104.047 122.203 104.252 118.162 L 124.651 111.863 C 123.78 118.945 122.113 134.089 120.422 140.063 Z" fill={getFill('right_leg_upper')} />
+                  {/* COSCIA SINISTRA */}
+                  <path d="M 98.699 147.915 C 98.39 149.71 97.814 152.078 97.402 154.371 L 87.075 154.371 C 87.183 153.784 87.15 153.356 86.981 152.909 C 86.271 150.96 86.795 143.155 85.909 140.061 C 84.213 134.081 82.547 118.938 81.683 111.844 C 81.682 111.834 81.681 111.824 81.679 111.814 L 102.091 118.143 C 102.304 122.154 99.923 140.613 98.698 147.915 L 98.699 147.915 Z" fill={getFill('left_leg_upper')} />
+                  {/* POLPACCIO DESTRO */}
+                  <path d="M 119.885 156.456 C 122.285 163.166 121.98 167.891 115.976 185.696 C 115.976 185.696 115.005 187.785 114.831 191.654 L 107.603 191.654 C 107.938 189.761 108.296 187.999 108.565 187.326 C 109.88 184.05 108.961 175.093 108.669 173.151 C 108.206 169.953 108.449 164.461 109.29 160.217 C 109.579 158.723 109.332 156.581 108.935 154.371 L 119.264 154.371 C 119.361 154.894 119.567 155.546 119.885 156.456 Z" fill={getFill('right_leg_lower')} />
+                  {/* POLPACCIO SINISTRO */}
+                  <path d="M 97.058 160.215 C 97.886 164.454 98.129 169.933 97.676 173.149 C 97.395 175.073 96.464 184.049 97.782 187.324 C 98.053 188.001 98.41 189.762 98.744 191.654 L 91.518 191.654 C 91.345 187.784 90.366 185.694 90.366 185.694 C 84.362 167.89 84.058 163.164 86.445 156.454 C 86.77 155.548 86.979 154.896 87.075 154.371 L 97.402 154.371 C 97.005 156.582 96.761 158.724 97.058 160.215 Z" fill={getFill('left_leg_lower')} />
+                  {/* PIEDE DESTRO */}
+                  <path d="M 115.063 196.729 C 115.063 196.729 118.905 204.621 116.439 204.779 C 116.439 204.779 116.238 205.302 115.416 204.888 C 115.416 204.888 114.089 206.258 112.658 205.515 C 112.658 205.515 111.33 206.574 110.191 205.631 C 110.191 205.631 109.272 206.678 107.945 205.832 C 107.945 205.832 106.203 206.982 105.186 205.734 C 105.186 205.734 103.332 206.142 106.617 197.848 C 106.617 197.848 107.083 194.592 107.604 191.654 L 114.832 191.654 C 114.767 193.102 114.813 194.799 115.064 196.729 L 115.063 196.729 Z" fill={getFill('right_foot')} />
+                  {/* PIEDE SINISTRO */}
+                  <path d="M 99.727 197.846 C 103.001 206.14 101.162 205.732 101.162 205.732 C 100.127 207.005 98.385 205.83 98.385 205.83 C 97.058 206.676 96.148 205.629 96.148 205.629 C 95.013 206.573 93.685 205.513 93.685 205.513 C 92.251 206.256 90.924 204.886 90.924 204.886 C 90.093 205.3 89.901 204.777 89.901 204.777 C 87.444 204.619 91.28 196.727 91.28 196.727 C 91.534 194.798 91.582 193.101 91.518 191.654 L 98.744 191.654 C 99.263 194.592 99.727 197.846 99.727 197.846 Z" fill={getFill('left_foot')} />
+                  
+                  {/* MANO DESTRA */}
+                  <path d="M 141.653 102.23 C 144.04 105.229 148.114 111.489 145.94 112.183 C 145.94 112.183 144.26 112.347 142.031 107.926 C 142.031 107.926 142.086 109.631 143.87 114.551 C 144.205 115.477 145.696 120.153 143.285 118.46 C 143.285 118.46 142.811 118.132 142.073 116.557 L 141.711 112.789 L 141.747 113.179 L 141.825 114.119 L 141.96 116.308 C 141.595 115.494 141.173 114.386 140.716 112.882 C 140.716 112.882 140.874 114.52 140.97 116.36 L 139.759 113.172 L 139.764 113.186 L 140.97 116.362 C 140.981 116.564 140.99 116.769 140.999 116.976 C 141.088 119.054 141.07 121.184 140.643 121.388 C 139.517 121.942 138.889 120.341 138.378 113.253 C 138.378 113.253 137.853 110.964 137.61 119.701 C 137.598 120.152 136.922 122.399 136.003 120.481 C 135.235 118.873 135.583 114.61 135.583 113.186 C 135.583 113.186 134.572 118.708 133.652 118.708 C 133.652 118.708 132.562 119.999 133.006 113.137 C 133.067 112.022 132.69 109.715 132.641 109.045 L 132.532 106.414 C 132.532 106.414 132.805 103.393 132.805 102.145 C 132.805 102.091 132.772 101.92 132.701 101.651 L 138.988 98.575 C 139.682 99.719 140.762 101.113 141.652 102.23 L 141.653 102.23 Z" fill={getFill('right_hand')} />
+                  {/* AVAMBRACCIO DESTRO */}
+                  <path d="M 134.949 77.569 C 134.949 77.569 136.879 80.96 137.104 88.767 C 137.104 88.767 137.665 95.383 138.408 97.441 C 138.531 97.768 138.734 98.154 138.989 98.575 L 132.702 101.651 C 132.372 100.388 131.229 96.969 128.885 93.398 C 128.885 93.398 122.967 82.917 123.344 76.058 L 134.942 77.557 C 134.945 77.561 134.947 77.565 134.95 77.569 L 134.949 77.569 Z" fill={getFill('right_arm_lower')} />
+                  {/* SPALLA / BRACCIO DESTRO SUPERIORE */}
+                  <path d="M 121.364 34.37 C 121.364 34.37 129.725 34.452 130.882 45.799 L 131.028 62.434 C 131.028 62.434 131.648 72.272 134.941 77.557 L 123.343 76.058 C 123.343 76.057 123.343 76.057 123.343 76.056 C 123.343 76.056 123.432 69.656 121.129 65.932 L 121.286 34.358 C 121.312 34.362 121.338 34.366 121.364 34.37 Z" fill={getFill('right_arm_upper')} />
+                  {/* DETTAGLIO MANO DESTRA */}
+                  <path d="M 141.825 114.12 L 141.747 113.18 L 141.711 112.79 L 142.073 116.558 C 142.036 116.479 141.998 116.396 141.959 116.31 L 141.825 114.12 Z" fill={getFill('right_hand')} />
+                  
+                  {/* MANO SINISTRA */}
+                  <path d="M 73.532 102.143 C 73.532 103.398 73.806 106.412 73.806 106.412 L 73.7 109.043 C 73.651 109.713 73.258 112.014 73.331 113.135 C 73.782 119.997 72.683 118.706 72.683 118.706 C 71.749 118.706 70.75 113.184 70.75 113.184 C 70.75 114.615 71.1 118.871 70.321 120.479 C 69.398 122.397 68.737 120.15 68.725 119.699 C 68.482 110.962 67.958 113.251 67.958 113.251 C 67.447 120.339 66.829 121.941 65.696 121.386 C 65.263 121.183 65.241 119.06 65.327 116.986 L 66.566 113.169 L 65.356 116.362 C 65.451 114.52 65.608 112.88 65.608 112.88 C 65.153 114.387 64.731 115.497 64.366 116.311 L 64.503 114.073 L 64.58 113.138 L 64.612 112.785 L 64.248 116.567 C 63.514 118.131 63.038 118.457 63.038 118.457 C 60.626 120.138 62.115 115.462 62.465 114.548 C 64.246 109.616 64.292 107.923 64.292 107.923 C 62.072 112.344 60.383 112.18 60.383 112.18 C 58.218 111.467 62.265 105.22 64.673 102.227 C 65.627 101.035 66.788 99.534 67.47 98.356 L 73.967 100.546 C 73.667 101.448 73.532 102.032 73.532 102.142 L 73.532 102.143 Z" fill={getFill('left_hand')} />
+                  {/* AVAMBRACCIO SINISTRO */}
+                  <path d="M 82.985 76.054 C 83.366 82.908 77.453 93.396 77.453 93.396 C 75.616 96.195 74.516 98.9 73.967 100.547 L 67.47 98.357 C 67.666 98.019 67.822 97.708 67.922 97.439 C 68.662 95.381 69.225 88.765 69.225 88.765 C 69.447 80.959 71.368 77.567 71.368 77.567 C 71.376 77.554 71.384 77.542 71.392 77.529 L 82.985 76.048 C 82.985 76.052 82.985 76.055 82.985 76.055 L 82.985 76.054 Z" fill={getFill('left_arm_lower')} />
+                  {/* SPALLA / BRACCIO SINISTRO SUPERIORE */}
+                  <path d="M 75.29 62.431 L 75.448 45.796 C 76.587 34.449 84.962 34.367 84.962 34.367 C 84.969 34.366 84.977 34.365 84.984 34.364 L 85.312 66.134 C 85.294 65.935 85.284 65.824 85.283 65.81 C 85.204 65.932 85.128 66.058 85.055 66.186 L 84.316 66.223 L 84.287 65.898 L 84.428 67.49 C 82.956 71.124 82.983 75.847 82.985 76.047 L 71.392 77.528 C 74.684 72.237 75.29 62.431 75.29 62.431 Z" fill={getFill('left_arm_upper')} />
+                  {/* DETTAGLIO SPALLA SX */}
+                  <path d="M 84.287 65.899 L 84.316 66.224 L 85.055 66.187 C 84.82 66.597 84.612 67.036 84.428 67.491 L 84.287 65.899 Z" fill={getFill('left_arm_upper')} />
+                  {/* DETTAGLI MANO SX */}
+                  <path d="M 66.565 113.169 L 65.326 116.986 C 65.335 116.777 65.344 116.568 65.355 116.362 L 66.565 113.169 Z" fill={getFill('left_hand')} />
+                  <path d="M 64.613 112.784 L 64.581 113.137 L 64.504 114.072 L 64.367 116.31 C 64.327 116.399 64.288 116.484 64.25 116.566 L 64.613 112.784 Z" fill={getFill('left_hand')} />
+                  
+                  {/* TESTA */}
+                  <path d="M 95.357 22.865 C 93.871 21.656 93.299 18.45 93.299 18.45 C 90.842 16.559 90.948 13.792 92.084 13.822 C 93.006 13.847 92.799 13.089 92.799 13.089 C 91.259 0.636 102.322 0 102.322 0 L 104.01 0 C 104.01 0 115.068 0.636 113.526 13.092 C 113.526 13.092 113.319 13.849 114.233 13.825 C 115.372 13.795 115.493 16.562 113.027 18.453 C 113.027 18.453 112.464 21.603 111.008 22.835 L 95.36 22.883 C 95.358 22.871 95.356 22.865 95.356 22.865 L 95.357 22.865 Z" fill={getFill('head')} />
+                </g>
+              </svg>
+            </div>
+
+            {/* In basso: Piede Sx e Piede Dx affiancati alla base dell'immagine */}
+            <div className="w-full grid grid-cols-2 gap-1.5 mt-auto">
+              {renderZoneRow('left_foot')}
+              {renderZoneRow('right_foot')}
+            </div>
+          </div>
+
+          {/* COLONNA DESTRA (Arti Dx + Torso Inf) */}
+          <div className="flex flex-col gap-y-3.5 h-full justify-center">
+            {renderZoneRow('right_arm_upper')}
+            {renderZoneRow('right_arm_lower')}
+            {renderZoneRow('right_hand')}
+            
+            {/* Torso Inferiore posizionato sotto la mano destra */}
+            {renderZoneRow('torso_lower')}
+            
+            <div className="h-2" />
+            {renderZoneRow('right_leg_upper')}
+            {renderZoneRow('right_leg_lower')}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}

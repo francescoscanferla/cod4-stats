@@ -80,3 +80,24 @@ export function aggregateMatchEvents(events: { hit_loc: string | null; weapon: s
 
   return { hit_zones: zones, top_weapons: topWeapons };
 }
+
+export function calculateRelativeHeatmap(hitZones: Record<string, number>): Record<string, string> {
+  const values = Object.values(hitZones);
+
+  if (values.length === 0) return {};
+
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const range = max - min;
+
+  const colorMap: Record<string, string> = {};
+
+  for (const [zone, value] of Object.entries(hitZones)) {
+    const ratio = range === 0 ? 0 : (value - min) / range;
+
+    const hue = (1 - ratio) * 120;
+    colorMap[zone] = `hsl(${hue}, 85%, 45%)`;
+  }
+
+  return colorMap;
+}
