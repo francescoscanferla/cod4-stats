@@ -31,7 +31,6 @@ export function BodyHeatmap({ hitZones, title }: BodyHeatmapProps) {
   const colors = calculateRelativeHeatmap(hitZones);
   const getFill = (zone: string) => colors[zone] || 'hsl(120, 85%, 45%)';
 
-  // Helper per renderizzare i tag compatti di testo + percentuale
   const renderZoneRow = (zone: string, alignRight = false) => {
     const pct = hitZones[zone] ?? 0;
     return (
@@ -57,41 +56,28 @@ export function BodyHeatmap({ hitZones, title }: BodyHeatmapProps) {
 
   return (
     <div className="w-full">
-      {/* Titolo esterno */}
-      <h5 className="text-xs uppercase tracking-wider font-bold mb-3 text-ctp-subtext">
+      <h4 className="text-sm font-semibold text-ctp-subtext mb-3">
         {title}
-      </h5>
+      </h4>
       
-      {/* Box principale senza arrotondamenti */}
       <div className="w-full bg-ctp-bg border border-ctp-line p-4 rounded-none">
-        
-        {/* Layout a 3 colonne */}
         <div className="grid grid-cols-3 gap-4 items-center min-h-[390px]">
           
-          {/* COLONNA SINISTRA (Arti Sx + Torso Sup) */}
           <div className="flex flex-col gap-y-3.5 h-full justify-center">
             {renderZoneRow('left_arm_upper', true)}
             {renderZoneRow('left_arm_lower', true)}
             {renderZoneRow('left_hand', true)}
-            
-            {/* Torso Superiore posizionato sotto la mano sinistra */}
             {renderZoneRow('torso_upper', true)}
-            
             <div className="h-2" />
             {renderZoneRow('left_leg_upper', true)}
             {renderZoneRow('left_leg_lower', true)}
           </div>
 
-          {/* COLONNA CENTRALE (Testa/Collo, SVG, Piedi) */}
           <div className="flex flex-col items-center justify-between h-full gap-4">
-            
-            {/* In alto: Testa e Collo affiancati (Testa a Sx, Collo a Dx) */}
             <div className="w-full grid grid-cols-2 gap-1.5">
               {renderZoneRow('head')}
               {renderZoneRow('neck')}
             </div>
-
-            {/* Il disegno completo dell'uomo con le zone corrette */}
             <div className="w-full flex justify-center my-auto">
               <svg
                 version="1.1"
@@ -150,7 +136,6 @@ export function BodyHeatmap({ hitZones, title }: BodyHeatmapProps) {
               </svg>
             </div>
 
-            {/* In basso: Piede Sx e Piede Dx affiancati alla base dell'immagine */}
             <div className="w-full grid grid-cols-2 gap-1.5 mt-auto">
               {renderZoneRow('left_foot')}
               {renderZoneRow('right_foot')}
@@ -162,10 +147,7 @@ export function BodyHeatmap({ hitZones, title }: BodyHeatmapProps) {
             {renderZoneRow('right_arm_upper')}
             {renderZoneRow('right_arm_lower')}
             {renderZoneRow('right_hand')}
-            
-            {/* Torso Inferiore posizionato sotto la mano destra */}
             {renderZoneRow('torso_lower')}
-            
             <div className="h-2" />
             {renderZoneRow('right_leg_upper')}
             {renderZoneRow('right_leg_lower')}

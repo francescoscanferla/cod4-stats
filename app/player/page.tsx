@@ -6,6 +6,7 @@ import { supabase } from '@/app/api/stats/stats-repository';
 import { Header } from '@/app/components/Header';
 import { Footer } from '@/app/components/Footer';
 import { BodyHeatmap } from '@/app/components/BodyHeatmap';
+import { WeaponsPodium } from '../components/WeaponsPodium';
 
 interface PlayerData {
   player_name: string;
@@ -106,23 +107,15 @@ function PlayerStatsContent() {
 
                 <div className="bg-ctp-surface border border-ctp-line p-6 rounded-lg flex flex-col gap-6">
                   <h3 className="text-lg font-bold text-green-400 border-b border-ctp-line pb-2 flex items-center gap-2">
-                    ⚔️ Sezione Attiva (Offensiva)
+                    ⚔️ Offensiva
                   </h3>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-ctp-subtext mb-3">Top 3 Armi Utilizzate</h4>
-                    <div className="flex flex-col gap-2">
-                      {playerData.offensive.top_weapons.length > 0 ? (
-                        playerData.offensive.top_weapons.map((w, idx) => (
-                          <div key={w.weapon_name} className="flex justify-between bg-ctp-bg p-2.5 rounded border border-ctp-line text-sm">
-                            <span>{idx + 1}. <strong className="text-ctp-text">{w.weapon_name}</strong></span>
-                            <span className="text-green-400 font-mono">{w.count} Kills</span>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-xs text-ctp-muted italic">Nessun dato sulle armi</p>
-                      )}
-                    </div>
+                    <WeaponsPodium
+                      weapons={playerData.offensive.top_weapons}
+                      title="Le Tue Preferite"
+                      type="offensive"
+                    />
                   </div>
 
                   <div>
@@ -135,23 +128,14 @@ function PlayerStatsContent() {
 
                 <div className="bg-ctp-surface border border-ctp-line p-6 rounded-lg flex flex-col gap-6">
                   <h3 className="text-lg font-bold text-ctp-red border-b border-ctp-line pb-2 flex items-center gap-2">
-                    🛡️ Sezione Passiva (Difensiva)
+                    🛡️ Difensiva
                   </h3>
 
                   <div>
-                    <h4 className="text-sm font-semibold text-ctp-subtext mb-3">Top 3 Armi Subite</h4>
-                    <div className="flex flex-col gap-2">
-                      {playerData.defensive.top_weapons.length > 0 ? (
-                        playerData.defensive.top_weapons.map((w, idx) => (
-                          <div key={w.weapon_name} className="flex justify-between bg-ctp-bg p-2.5 rounded border border-ctp-line text-sm">
-                            <span>{idx + 1}. <strong className="text-ctp-text">{w.weapon_name}</strong></span>
-                            <span className="text-ctp-red font-mono">{w.count} Morti</span>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-xs text-ctp-muted italic">Nessun dato sulle armi</p>
-                      )}
-                    </div>
+                    <WeaponsPodium
+                      weapons={playerData.defensive.top_weapons}
+                      title="Attento a Queste"
+                      type="defensive" />
                   </div>
 
                   <div>
