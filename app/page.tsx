@@ -7,39 +7,12 @@ import { Header } from '@/app/components/Header';
 import { Footer } from '@/app/components/Footer';
 import { PageLoader } from '@/app/components/PageLoader';
 
-interface PlayerStats {
-  player_guid: string;
-  player_name: string;
-  kills: number;
-  headshots: number;
-  ratio: number;
-  claymorekills: number;
-  grenadekills: number;
-  knifekills: number;
-  deaths: number;
-  suicides: number;
-}
-
-interface Awards {
-  kills: { player_name: string; value: number };
-  headshots: { player_name: string; value: number };
-  ratio: { player_name: string; value: number };
-  claymorekills: { player_name: string; value: number };
-  grenadekills: { player_name: string; value: number };
-  knifekills: { player_name: string; value: number };
-  deaths: { player_name: string; value: number };
-  suicides: { player_name: string; value: number };
-}
-
-interface StatsPayload {
-  awards: Awards;
-  general: PlayerStats[];
-}
+import { PlayerStat, AwardItem, StatsResponse } from './types/stats';
 
 const Home = () => {
   const router = useRouter();
   const [period, setPeriod] = useState<'global' | 'last'>('global');
-  const [stats, setStats] = useState<StatsPayload | null>(null);
+  const [stats, setStats] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -70,7 +43,7 @@ const Home = () => {
         if (!res.ok) {
           throw new Error(`Error fetching data: ${res.statusText}`);
         }
-        const data: StatsPayload = await res.json();
+        const data: StatsResponse = await res.json();
         setStats(data);
       } catch (err: any) {
         setError(err.message);
@@ -82,7 +55,7 @@ const Home = () => {
     checkUserAndFetch();
   }, [period]);
 
-  const getBorderColorForStat = (statName: keyof Awards) => {
+  const getBorderColorForStat = (statName: keyof StatsResponse["awards"]) => {
     switch (statName) {
       case 'kills':
       case 'headshots':
@@ -99,7 +72,7 @@ const Home = () => {
     }
   };
 
-  const getColorForStat = (statName: keyof Awards, value: number) => {
+  const getColorForStat = (statName: keyof StatsResponse["awards"], value: number) => {
     switch (statName) {
       case 'kills':
       case 'headshots':
@@ -116,7 +89,7 @@ const Home = () => {
     }
   };
 
-  const getAwardName = (awardName: keyof Awards) => {
+  const getAwardName = (awardName: keyof StatsResponse["awards"]) => {
     switch (awardName) {
       case 'kills':
         return 'Il Mietitore';
@@ -139,7 +112,7 @@ const Home = () => {
     }
   };
 
-  const getAwardDescription = (awardName: keyof Awards) => {
+  const getAwardDescription = (awardName: keyof StatsResponse["awards"]) => {
     switch (awardName) {
       case 'kills':
         return 'Se lo incontri...muori.';
@@ -163,7 +136,7 @@ const Home = () => {
   };
 
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof PlayerStats;
+    key: keyof PlayerStat;
     direction: 'asc' | 'desc';
   }>({ key: 'kills', direction: 'desc' });
 
@@ -172,32 +145,30 @@ const Home = () => {
 
     const sortableItems = [...stats.general];
     sortableItems.sort((a, b) => {
-      let aValue = a[sortConfig.key];
-      let bValue = b[sortConfig.key];
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
 
-      if (typeof aValue === 'string') {
-        return sortConfig.direction === 'asc'
-          ? (aValue as string).localeCompare(bValue as string)
-          : (bValue as string).localeCompare(aValue as string);
+      if (typeof aValue === "string") {
+        return sortConfig.direction === "asc"
+          ? aValue.localeCompare(bValue as string)
+          : (bValue as string).localeCompare(aValue);
       }
 
-      return sortConfig.direction === 'asc' ? (aValue as number) - (bValue as number) : (bValue as number) - (aValue as number);
+      return sortConfig.direction === "asc" ? aValue - (bValue as number) : (bValue as number) - aValue;
     });
 
     return sortableItems;
   }, [stats, sortConfig]);
 
-  const requestSort = (key: keyof PlayerStats) => {
-    let direction = 'desc';
-    if (sortConfig.key === key && sortConfig.direction === 'desc') {
-      direction = 'asc';
-    } else {
-      direction = 'desc';
+  const requestSort = (key: keyof PlayerStat) => {
+    let direction: "asc" | "desc" = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = "asc";
     }
-    setSortConfig({ key, direction: direction as "asc" | "desc" });
+    setSortConfig({ key, direction });
   };
 
-  const getSortIcon = (key: keyof PlayerStats) => {
+  const getSortIcon = (key: keyof PlayerStat) => {
     if (sortConfig.key !== key) return ' ↕';
     return sortConfig.direction === 'asc' ? ' 🔼' : ' 🔽';
   };
@@ -227,15 +198,15 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
-            {Object.entries(stats.awards).map(([key, award]) => (
+            {(Object.entries(stats.awards) as [keyof AwardItem, any][]).map(([key, award]) => (
               <div
                 key={key}
-                className={`bg-ctp-overlay p-4 border border-ctp-line border-t-2 ${getBorderColorForStat(key as keyof Awards)} flex flex-col items-center text-center`}>
+                className={`bg-ctp-overlay p-4 border border-ctp-line border-t-2 ${getBorderColorForStat(key as keyof StatsResponse["awards"])} flex flex-col items-center text-center`}>
                 <img src={`/dashboard/${key}.png`} alt={key} className="w-8 h-8 mb-2" />
-                <h3 className="text-sm font-semibold text-white mb-1">{getAwardName(key as keyof Awards)}</h3>
-                <p className="text-xs text-ctp-muted mb-2">{getAwardDescription(key as keyof Awards)}</p>
-                <p className={`text-lg font-bold ${getColorForStat(key as keyof Awards, award.value)}`}>
-                  {award.player_name} ({typeof award.value === 'number' ? award.value : award.value})
+                <h3 className="text-sm font-semibold text-white mb-1">{getAwardName(key as keyof StatsResponse["awards"])}</h3>
+                <p className="text-xs text-ctp-muted mb-2">{getAwardDescription(key as keyof StatsResponse["awards"])}</p>
+                <p className={`text-lg font-bold ${getColorForStat(key as keyof StatsResponse["awards"], award.value)}`}>
+                  {award.player_name} ({award.value})
                 </p>
               </div>
             ))}

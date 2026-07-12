@@ -13,7 +13,6 @@ interface WeaponsPodiumProps {
   type: 'offensive' | 'defensive';
 }
 
-// Mappatura dei nomi delle armi alle loro immagini
 const WEAPON_IMAGES: Record<string, string> = {
   'mp44_mp': '/weapons/mp_44.webp',
   'saw_grip_mp': '/weapons/m249-saw.webp',

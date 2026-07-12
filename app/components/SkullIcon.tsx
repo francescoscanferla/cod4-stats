@@ -1,6 +1,6 @@
 const SkullIcon = ({ className }: { className?: string }) => (
   <svg fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-    width="800px" height="800px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xmlSpace="preserve" className={className}>
+    width="800px" height="800px" viewBox="0 0 100 100" enableBackground="new 0 0 100 100" xmlSpace="preserve" className={className}>
   <g>
     <path d="M87.255,72.316c-2.248-2.246-5.832-2.318-8.118-0.208l-9-9c2.459-3.77,3.894-8.27,3.894-13.107s-1.435-9.337-3.894-13.107
       l8.949-8.949c2.287,2.111,5.87,2.042,8.118-0.207c2.306-2.3,2.329-6.017,0.054-8.293c-1.371-1.371-3.264-1.9-5.058-1.603
