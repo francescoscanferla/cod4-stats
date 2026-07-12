@@ -15,15 +15,13 @@ interface WeaponsPodiumProps {
 
 // Mappatura dei nomi delle armi alle loro immagini
 const WEAPON_IMAGES: Record<string, string> = {
-  'AK-47': '/weapons/ak47.png',
-  'M4A4': '/weapons/m4a4.png',
-  'AWP': '/weapons/awp.png',
-  'Desert Eagle': '/weapons/deagle.png',
+  'mp44_mp': '/weapons/mp_44.webp',
+  'saw_grip_mp': '/weapons/m249-saw.webp',
+  'gl_g36c_mp': '/weapons/g36c.webp',
+  'm60e4_grip_mp': '/weapons/m60e4.webp',
 };
 
-// Icone SVG custom inline per evitare dipendenze esterne
 import TargetIcon from './TargetIcon';
-
 import SkullIcon from './SkullIcon';
 export function WeaponsPodium({ weapons, title, type }: WeaponsPodiumProps) {
   const topThree = weapons.slice(0, 3);
@@ -94,9 +92,6 @@ export function WeaponsPodium({ weapons, title, type }: WeaponsPodiumProps) {
                     <div className="text-lg font-black font-mono text-ctp-subtext/40 group-hover:text-ctp-subtext/70 transition-colors">
                       {style.rank}°
                     </div>
-                    {/* <div className="text-[11px] font-bold text-center truncate w-full text-ctp-text tracking-wide uppercase">
-                      {weapon.weapon_name}
-                    </div> */}
                   </div>
                 </div>
               );
