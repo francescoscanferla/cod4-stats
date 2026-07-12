@@ -70,11 +70,11 @@ function PlayerStatsContent() {
   }, [router, playerId]);
 
   return (
-    <div className="min-h-screen bg-ctp-bg text-ctp-text p-4 font-sans flex flex-col justify-between">
+    <div className="flex flex-col min-h-screen bg-ctp-bg text-ctp-text">
       <div>
         <Header isAdmin={isAdmin} avatarUrl={avatarUrl} />
 
-        <main className="mb-6 w-full">
+        <main className="mb-6 w-full px-4">
           {loadingData ? (
             <PageLoader message="Caricamento statistiche..." />
           ) : !playerData ? (

@@ -174,14 +174,14 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-ctp-bg text-ctp-text p-4 font-sans">
+    <div className="flex flex-col min-h-screen bg-ctp-bg text-ctp-text">
       <Header isAdmin={isAdmin} avatarUrl={avatarUrl} />
 
       {loading && <PageLoader message="Caricamento statistiche..." />}
       {error && <p className="text-center text-red-500">Errore: {error}</p>}
 
       {!loading && stats && (
-        <>
+        <main className="mb-6 w-full px-4">
           <div className="bg-ctp-surface rounded-full p-1 mb-6 flex justify-around">
             <button
               className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'global' ? 'bg-ctp-brand text-ctp-bg' : 'text-ctp-text'}`}
@@ -292,7 +292,7 @@ const Home = () => {
               </table>
             </div>
           </div>
-        </>
+        </main>
       )}
 
       <Footer />
