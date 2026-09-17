@@ -47,13 +47,18 @@ export async function POST(request: Request) {
         const playersMap = new Map<string, { guid: string; player_name: string; updated_at: string }>();
         const eventsToInsert: any[] = [];
 
+        const normalizeGuid = (guid: string) => (!guid || guid === '0' ? null : guid);
+
         const trackPlayer = (guid: string, name: string) => {
             if (guid && guid !== '0') {
+                console.log(`Tracking player: ${guid} - ${name}`);
                 playersMap.set(guid, {
                     guid,
                     player_name: name || 'Unknown Player',
                     updated_at: new Date().toISOString(),
                 });
+            } else {
+                console.log(`Skipping player (empty or '0'): guid="${guid}", name="${name}"`);
             }
         };
 
@@ -87,8 +92,8 @@ export async function POST(request: Request) {
 
                 eventsToInsert.push({
                     session_id: sessionId,
-                    attacker_guid: attackerGuid === '0' ? null : attackerGuid,
-                    victim_guid: victimGuid === '0' ? null : victimGuid,
+                    attacker_guid: normalizeGuid(attackerGuid),
+                    victim_guid: normalizeGuid(victimGuid),
                     weapon,
                     damage,
                     mod,
@@ -98,31 +103,37 @@ export async function POST(request: Request) {
 
             else if (type === 'D' && parts.length >= 12) {
                 const victimGuid = parts[0];
-                const victimName = parts[4];
-                const attackerName = parts[8];
+                const victimName = parts[3];
+                const attackerGuid = parts[4];
+                const attackerName = parts[7];
                 const weapon = parts[8];
                 const damage = parseInt(parts[9], 10) || 0;
                 const method = parts[10];
                 const hitLoc = parts[11];
 
-                if (attackerName === 'world' || method === 'MOD_FALLING') {
-                    trackPlayer(victimGuid, victimName);
+                trackPlayer(victimGuid, victimName);
 
-                    eventsToInsert.push({
-                        session_id: sessionId,
-                        attacker_guid: null,
-                        victim_guid: victimGuid === '0' ? null : victimGuid,
-                        weapon,
-                        damage,
-                        mod: method,
-                        hit_loc: hitLoc,
-                    });
+                const isWorld = attackerName === 'world' || method === 'MOD_FALLING' || attackerGuid === '0';
+
+                if (!isWorld) {
+                    trackPlayer(attackerGuid, attackerName);
                 }
+
+                eventsToInsert.push({
+                    session_id: sessionId,
+                    attacker_guid: isWorld ? null : normalizeGuid(attackerGuid),
+                    victim_guid: normalizeGuid(victimGuid),
+                    weapon,
+                    damage,
+                    mod: method,
+                    hit_loc: hitLoc,
+                });
             }
         }
 
         if (playersMap.size > 0) {
             const playersArray = Array.from(playersMap.values());
+            console.log('Players to upsert:', playersArray.map(p => ({ guid: p.guid, name: p.player_name })));
             const { error: playersError } = await supabaseAdmin
                 .from('players')
                 .upsert(playersArray, { onConflict: 'guid' });
@@ -131,6 +142,24 @@ export async function POST(request: Request) {
         }
 
         if (eventsToInsert.length > 0) {
+            console.log('Events to insert:', eventsToInsert.map(e => ({ 
+                attacker_guid: e.attacker_guid, 
+                victim_guid: e.victim_guid,
+                weapon: e.weapon 
+            })));
+            
+            // Verify all GUIDs exist in playersMap
+            const missingAttackers = eventsToInsert
+                .filter(e => e.attacker_guid && !playersMap.has(e.attacker_guid))
+                .map(e => e.attacker_guid);
+            const missingVictims = eventsToInsert
+                .filter(e => e.victim_guid && !playersMap.has(e.victim_guid))
+                .map(e => e.victim_guid);
+            
+            if (missingAttackers.length > 0 || missingVictims.length > 0) {
+                console.error('MISSING GUIDs in playersMap:', { missingAttackers, missingVictims });
+            }
+
             const { error: eventsError } = await supabaseAdmin
                 .from('matches_events')
                 .insert(eventsToInsert);
@@ -140,6 +169,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             success: true,
+            inserted_records: eventsToInsert.length,
             message: `Sessione creata con ID ${sessionId}. Rilevati ${playersMap.size} giocatori e salvati ${eventsToInsert.length} eventi di gioco.`,
         });
     } catch (error: any) {
