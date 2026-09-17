@@ -71,7 +71,7 @@ export default function AdminDashboard() {
       formData.append('description', description);
       formData.append('date', sessionDate);
 
-      const response = await fetch('/api/stats/upload-log', {
+      const response = await fetch('/api/stats/upload', {
         method: 'POST',
         body: formData,
       });
