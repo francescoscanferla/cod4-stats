@@ -15,9 +15,17 @@ interface WeaponsPodiumProps {
 
 const WEAPON_IMAGES: Record<string, string> = {
   'mp44_mp': '/weapons/mp_44.webp',
-  'saw_grip_mp': '/weapons/m249-saw.webp',
+  'saw_mp': '/weapons/m249-saw.webp',
   'gl_g36c_mp': '/weapons/g36c.webp',
   'm60e4_grip_mp': '/weapons/m60e4.webp',
+  'm4_reflex_mp': '/weapons/m4-carbine.webp',
+  'mp5_reflex_mp': '/weapons/mp5-1.webp',
+  'claymore_mp': '/weapons/claymore.webp',
+  'frag_grenade_mp': '/weapons/grenade.webp',
+  'skorpion_silencer_mp': '/weapons/skorpion.webp',  
+  'm16_reflex_mp': '/weapons/m16a4.webp',
+  'concussion_grenade_mp': '/weapons/concussion_grenade_mp.webp',
+  'beretta_mp': '/weapons/m9.webp',
 };
 
 import TargetIcon from './TargetIcon';
