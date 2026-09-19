@@ -24,9 +24,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-.env
+# env files — mai committati, in prod via Render dashboard
+.env*
 
 # vercel
 .vercel
