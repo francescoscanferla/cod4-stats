@@ -1,5 +1,5 @@
 export interface PlayerStat {
-  player_guid: string;
+  player_id: string;
   player_name: string;
   kills: number;
   headshots: number;

@@ -1,4 +1,5 @@
 import { PlayerStat, StatsResponse, HitZones } from "@/app/types/stats";
+import { EventType } from "@/app/api/stats/upload/types/log.types";
 
 export function emptyResponse(): StatsResponse {
   return {
@@ -51,7 +52,9 @@ export function createEmptyZones(): HitZones {
   };
 }
 
-export function aggregateMatchEvents(events: { hit_loc: string | null; weapon: string | null }[]) {
+export function aggregateMatchEvents(
+  events: { hit_loc: string | null; weapon: string | null; event_type?: string | null }[]
+) {
   const zones = createEmptyZones();
   const weaponsMap = new Map<string, number>();
   let totalHits = 0;
@@ -61,7 +64,8 @@ export function aggregateMatchEvents(events: { hit_loc: string | null; weapon: s
       zones[event.hit_loc as keyof HitZones]++;
       totalHits++;
     }
-    if (event.weapon) {
+    const isKill = !event.event_type || event.event_type === EventType.KILL;
+    if (isKill && event.weapon) {
       weaponsMap.set(event.weapon, (weaponsMap.get(event.weapon) || 0) + 1);
     }
   });

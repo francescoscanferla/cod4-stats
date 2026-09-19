@@ -17,6 +17,7 @@ const Home = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [lastSessionDate, setLastSessionDate] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUserAndFetch = async () => {
@@ -34,6 +35,18 @@ const Home = () => {
       const userAvatar = session.user?.user_metadata?.avatar_url || session.user?.user_metadata?.picture;
       if (userAvatar) {
         setAvatarUrl(userAvatar);
+      }
+
+      try {
+        const dateRes = await fetch('/api/stats/last-session-date');
+        if (dateRes.ok) {
+          const dateData = await dateRes.json();
+          if (dateData.session_date) {
+            setLastSessionDate(dateData.session_date);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch last session date:', err);
       }
 
       setLoading(true);
@@ -173,6 +186,15 @@ const Home = () => {
     return sortConfig.direction === 'asc' ? ' 🔼' : ' 🔽';
   };
 
+  const formatSessionDate = (dateStr: string | null) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return ` (${day}.${month}.${year})`;
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-ctp-bg text-ctp-text">
       <Header isAdmin={isAdmin} avatarUrl={avatarUrl} />
@@ -193,7 +215,7 @@ const Home = () => {
               className={`w-1/2 py-2 rounded-full text-sm font-medium transition-colors cursor-pointer ${period === 'last' ? 'bg-ctp-brand text-ctp-bg' : 'text-ctp-text'}`}
               onClick={() => setPeriod('last')}
             >
-              Ultima Sessione
+              Ultima Sessione{formatSessionDate(lastSessionDate)}
             </button>
           </div>
 
@@ -261,7 +283,7 @@ const Home = () => {
                       >
                         <td
                           className="p-3 font-medium cursor-pointer hover:text-[#a6e3a1] transition-colors flex items-center gap-2 group"
-                          onClick={() => router.push(`/player?id=${encodeURIComponent(player.player_guid)}`)}
+                          onClick={() => router.push(`/player?id=${encodeURIComponent(player.player_id)}`)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

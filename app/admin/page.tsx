@@ -128,7 +128,6 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Contenitore del Form */}
           <div className="max-w-2xl mx-auto bg-ctp-surface border border-ctp-line p-6 rounded-lg space-y-6">
             <div className="border-b border-ctp-line pb-3 flex items-center gap-2">
               <h3 className="text-sm font-bold font-mono uppercase tracking-widest text-ctp-brand">

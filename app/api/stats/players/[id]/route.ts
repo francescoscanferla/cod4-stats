@@ -3,16 +3,16 @@ import { getPlayerDetails } from '@/app/api/stats/stats-repository';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ guid: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const { guid } = await params;
+    const { id } = await params;
 
-    if (!guid) {
-        return NextResponse.json({ error: "Missing player GUID parameter" }, { status: 400 });
+    if (!id) {
+        return NextResponse.json({ error: "Missing player id parameter" }, { status: 400 });
     }
 
     try {
-        const data = await getPlayerDetails(guid);
+        const data = await getPlayerDetails(id);
 
         if (!data) {
             return NextResponse.json({ error: "Player not found" }, { status: 404 });
