@@ -85,6 +85,7 @@ npx supabase stop                    # ferma container locali
 
 Migrazioni presenti (squash 2026-09-19 — unico file, `npx supabase db reset` ricrea tutto):
 - `20260919075403_migrate_to_name_key.sql` — dump compattato di tutte le precedenti: `sessions`, `players (id UUID PK, player_name UNIQUE case-sensitive, guid eliminato)`, `matches_events (attacker_id/victim_id UUID FK, event_type TEXT CHECK KILL|DAMAGE)`, RLS + GRANT + indici. Storico compattato via `npx supabase migration squash` (nessun dato perso, test DB resettato)
+- `20260920084232_add_merge_players_function.sql` — `FUNCTION merge_players(src_name TEXT, tgt_name TEXT)` per bonifica duplicati same-player
 
 ## Upload log — formato atteso
 Righe CoD4: `MM:SS J;guid;...;name` | `MM:SS K;attackerGuid;...;attackerName;victimGuid;...;victimName;weapon;damage;mod;hitLoc` | `MM:SS D;victimGuid;...;victimName;attackerGuid;...;attackerName;weapon;damage;mod;hitLoc` (`guid` del log ignorato, chiave import = `player_name` case-sensitive)
@@ -142,6 +143,23 @@ Per cloud: `npx supabase db query "..." --linked` oppure Dashboard Supabase → 
 4. Login su `http://127.0.0.1:3000/login` — `login/page.tsx:10 redirectTo: window.location.origin` torna su `127.0.0.1:3000/`. Usa `127.0.0.1` non `localhost` per matchare `site_url`.
 
 Se non vuoi configurare Google in locale, usa email/password (conferma disabilitata in locale) per testare admin.
+
+## Manutenzione DB — Merge player duplicato
+
+Stesso giocatore con due nomi (case-sensitive duplicato, es. `mario_kill` → `Mario_Kill`):
+
+```sql
+SELECT public.merge_players('mario_kill', 'Mario_Kill');
+-- sposta tutti i matches_events (attacker + victim) dal source al target ed elimina il source
+-- parametri case-sensitive, nomi usati una sola volta come variabili interne
+```
+
+Esecuzione: Studio → SQL Editor oppure `npx supabase db query "select public.merge_players('mario_kill','Mario_Kill');" --local` (`--linked` per cloud). Funzione in `20260920084232`.
+
+Truncate test:
+```sql
+TRUNCATE TABLE public.matches_events, public.sessions, public.players RESTART IDENTITY CASCADE;
+```
 
 ## Troubleshooting
 - `event_type` mancante dopo pull cloud → `npx supabase db push` o `migration up`
