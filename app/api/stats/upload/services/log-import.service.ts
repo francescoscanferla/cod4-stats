@@ -16,7 +16,11 @@ export class LogImportService {
         this.tracker.track(parts[2]);
       } else if (type === 'K' && parts.length >= MIN_PARTS_K) {
         this.tracker.track(parts[3]);
-        this.tracker.track(parts[7]);
+        const attackerName = parts[7];
+        const mod = parts[10];
+        if (!isWorldEvent(attackerName, mod)) {
+          this.tracker.track(attackerName);
+        }
       } else if (type === 'D' && parts.length >= MIN_PARTS_D) {
         this.tracker.track(parts[3]);
         const attackerName = parts[7];

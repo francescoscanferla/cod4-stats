@@ -9,8 +9,8 @@ export const buildKEvent = (
   sessionId: string,
   idByName: Map<string, string>
 ): MatchEventInsert => {
-  const attackerName = parts[3];
-  const victimName = parts[7];
+  const victimName = parts[3];
+  const attackerName = parts[7];
   const weapon = parts[8];
   const damage = parseInt(parts[9], 10) || 0;
   const mod = parts[10];
