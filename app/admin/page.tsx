@@ -69,7 +69,7 @@ export default function AdminDashboard() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('description', description);
-      formData.append('date', sessionDate);
+      formData.append('session_date', sessionDate);
 
       const response = await fetch('/api/stats/upload', {
         method: 'POST',
