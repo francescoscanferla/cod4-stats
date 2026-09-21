@@ -26,6 +26,7 @@ const WEAPON_IMAGES: Record<string, string> = {
   'm16_reflex_mp': '/weapons/m16a4.webp',
   'concussion_grenade_mp': '/weapons/concussion_grenade_mp.webp',
   'beretta_mp': '/weapons/m9.webp',
+  'none': '/weapons/suicide.webp',
 };
 
 import TargetIcon from './TargetIcon';
