@@ -18,9 +18,9 @@ export async function getGlobalStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("victim_id", player.id).eq("event_type", EventType.KILL),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "claymore_mp"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "grenade_mp"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "frag_grenade_mp").neq("victim_id", player.id),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("mod", "MOD_MELEE"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("mod", "MOD_SUICIDE"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("victim_id", player.id).eq("attacker_id", player.id).eq("event_type", EventType.KILL),
     ]);
 
     const kills = k.count || 0;
@@ -65,9 +65,9 @@ export async function getLastSessionStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("victim_id", id),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "claymore_mp"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "grenade_mp"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "frag_grenade_mp").neq("victim_id", id),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("mod", "MOD_MELEE"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("mod", "MOD_SUICIDE"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("victim_id", id).eq("attacker_id", id),
     ]);
 
     const kills = k.count || 0;
