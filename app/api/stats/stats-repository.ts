@@ -19,7 +19,7 @@ export async function getGlobalStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "claymore_mp"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "grenade_mp"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("weapon", "knife_mp"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("mod", "MOD_MELEE"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("attacker_id", player.id).eq("event_type", EventType.KILL).eq("mod", "MOD_SUICIDE"),
     ]);
 
@@ -66,7 +66,7 @@ export async function getLastSessionStats(): Promise<StatsResponse> {
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("hit_loc", "head"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "claymore_mp"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "grenade_mp"),
-      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("weapon", "knife_mp"),
+      supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("mod", "MOD_MELEE"),
       supabase.from("matches_events").select("id", { count: "exact", head: true }).eq("session_id", latestSession.id).eq("event_type", EventType.KILL).eq("attacker_id", id).eq("mod", "MOD_SUICIDE"),
     ]);
 
